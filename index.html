@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro App</title>
+
+    <!-- Font Links -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CSS External File -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- JavaScript External File -->
+    <script src="script.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>pomodoro</h1>
+
+        <div class="states">
+            <div class="pomodoro-state active">
+                pomodoro
+            </div>
+            <div class="short-break-state">
+                short break
+            </div>
+            <div class="long-break-state">
+                long break
+            </div>
+        </div>
+
+        <!-- tinha feito isto com pseudo elements, em CSS (::before, :.after), mas assim fica mais legível -->
+
+        <!--
+        <div class="outer-circle">
+            <div class="inner-circle">
+                <div class="circular-progress-bar">
+                    <div class="timer">
+                        <span class="time-left">17:59</span>
+                        <span class="pause">PAUSE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+        
+        <!-- porém, para me aproximar o mais possível do design original, preciso de definir um stroke-linecap: round; e essa propriedade só é aplicável a SVG elements, por isso, vou ter de fazer a circular-progress-bar usando um <circle> tag, em vez de um regular div com border-radius: 50% -->
+
+        <div class="outer-circle">
+            <div class="inner-circle"> 
+                <div class="timer">
+                    <div class="time-left">
+                        <p class="minutes">25</p>
+                        <p>:</p>
+                        <p class="seconds">00</p>
+                    </div>
+                    <p class="pause">PAUSE</p>
+                </div>
+
+                <svg height="300px" width="300px">
+                    <circle cx="150px" cy="150px" r="140px"/>
+                    <!-- <circle cx="coordenada x do centro do círculo" cy="coordenada y" r="raio" -->
+                    <!-- esta vai ser a minha circle-progress-bar -->
+                </svg>
+            </div>
+        </div>
+
+        <svg height="1.5rem" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path class="settings-icon" d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336c44.2 0 80-35.8 80-80s-35.8-80-80-80s-80 35.8-80 80s35.8 80 80 80z" fill="currentColor"/></svg>
+    </div>
+
+    <div class="settings-container">
+        <div class="settings">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <img src="images/icon-close.svg" class="close-icon" alt="close icon">
+            </div>
+
+            <div class="settings-main">
+                <div class="time">
+                    <h4>TIME (MINUTES)</h4>
+                    <div class="time-options">
+                        <div class="pomodoro">
+                            <p>pomodoro</p>
+                            <div class="time-selection">
+                                <div class="pomodoro-number">25</div>
+                                <div class="arrows">
+                                    <img src="images/chevron-up-solid.svg" class="arrow-up" alt="arrow up">
+                                    <img src="images/chevron-down-solid.svg" class="arrow-down" alt="arrow down">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="short-break">
+                            <p>short break</p>
+                            <div class="time-selection">
+                                <div class="short-break-number">5</div>
+                                <div class="arrows">
+                                    <img src="images/chevron-up-solid.svg" class="arrow-up" alt="arrow up">
+                                    <img src="images/chevron-down-solid.svg" class="arrow-down" alt="arrow down">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="long-break">
+                            <p>long break</p>
+                            <div class="time-selection">
+                                <div class="long-break-number">15</div>
+                                <div class="arrows">
+                                    <img src="images/chevron-up-solid.svg" class="arrow-up" alt="arrow up">
+                                    <img src="images/chevron-down-solid.svg" class="arrow-down" alt="arrow down">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--
+                    Tinha escrito o div.long-break-number assim:
+                    <div class="long-break-number">
+                        15
+                    </div>
+                    PROBLEMA: depois, ao aceder ao innerText, não ia ter só um "15", ia ter um espaço antes e, se o long break fosse de, por ex., 5 min, ao fazer a concatenação '0' + longBreakNumber.innerText, não iria obter "05", iria obter "0
+                    
+                    5" e isso iria influenciar o layout. SOLUÇÃO: escrever tudo seguido <div>15</div> (simples, rápido, eficaz) ou, alternativamente, utilizar o método trim, antes de juntar as strings, para remover os empty spaces à volta (linha 267 do script.js)
+                -->
+
+                <div class="font">
+                    <h4>FONT</h4>
+
+                    <div class="font-options">
+
+                        <div class="roboto selected-font">
+                            Aa
+                        </div>
+                        <div class="montserrat">
+                            Aa
+                        </div>
+                        <div class="ibm-plex-sans">
+                            Aa
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="color">
+                    <h4>COLOR</h4>
+                    
+                    <div class="color-options">
+                        <div class="pink-circle selected-color"></div>
+                        <div class="cyan-circle"></div>
+                        <div class="violet-circle"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="apply">Apply</div>
+            
+        </div>
+    </div>
+    
+</body>
+
+</html>
+
+<!-- Alternativamente, podia ter feito vários <div> e definir uma border-radius: 50%, como fiz para os filhos do div.font-options, OU criar vários <circle> tags, como fiz anteriormente, mas optei por adicionar SVG codes (https://fontawesome.com), para estudar outra forma de alterar a cor da imagem original, sem usar a filter property. Para além disso, em vez de colocar o certinho que aparece no design original, sob a cor selecionada, vou aplicar um stroke, à volta da SVG, para estudar essa propriedade. -->
+
+<!--
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 32 32"><path class="pink-circle selected-color" fill="currentColor" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512"><path class="cyan-circle" fill="currentColor" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512"><path class="violet-circle" fill="currentColor" d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512z"/></svg>
+
+    viewbox = "x-min y-min width height" corresponde à posição e dimensão do retângulo que delimita o elemento SVG, em que x-min e y-min são as coordenadas do top-left corner; width e height correspondem ao número máximo de unidades/px que cabem na viewbox. Se a minha SVG tiver 2rem de altura e 2rem de largura e o size da root for 16px, então a minha SVG terá 32px por 32px (2*16)
+
+-->

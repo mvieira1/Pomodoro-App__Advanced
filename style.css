@@ -1,0 +1,386 @@
+/*CSS Reset -> Homogeneidade entre browsers*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*pink-theme (default)*/
+:root{
+    --theme-color: #f87070;
+}
+
+.cyan-theme{
+    --theme-color: #6ef3fc;
+}
+
+.violet-theme{
+    --theme-color: #da81f8;
+}
+
+html{
+    height: 100%;
+}
+
+body{
+    height: 100%;
+    width: 100%;
+    background-color: #1e2140;
+    color: #d5dcfa;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.states{
+    background-color: #151932;
+    color: #646881;
+    display: flex;
+    border-radius: 30px;
+    padding: .4rem;
+}
+
+.states div{
+    font-size: .9rem;
+    font-weight: 700;
+    padding: .8rem 1.6rem;
+}
+
+.active{
+    border-radius: 30px;
+    background-color: var(--theme-color);
+    color: #1e2245;
+}
+
+.outer-circle{
+    height: 360px;
+    width: 360px;
+    background: conic-gradient(#151932 0deg, #1e2140 90deg, #363b66 180deg, #1e2140 270deg, #151932 360deg);
+    /*conic-gradient cria um gradiente de cores, cujas transições ocorrem em torno de um ponto central (como na color wheel, por ex.!). Por default, a primeira cor começa nos 0º (ao meio, no topo) e as outras seguem os ponteiros do relógio. Posso editar os graus em que cada color está posicionada*/
+    /*portanto, neste momento, por default, as cores estão uniformemente distribuídas e, portanto, o background que escrevi é equivalente ao gradiente:
+    background: conic-gradient(#151932 0deg, #1e2140 90deg, #646881 180deg, #1e2140 270deg, #151932 360deg)*/
+    box-shadow: 8px 8px 20px #151932, -8px -8px 20px #363b66;
+    border-radius: 50%;
+    position: relative;
+} /*fiz um círculo para aplicar o gradiente e posicionei-o atrás do div.inner-circle. Tinha feito um div só com borders, sem background, mas depois não ia conseguir utilizar o gradient com o border-radius. A solução é mesmo sobrepor vários círculos e alterar a background color*/
+
+.inner-circle{
+    position: absolute; /*em relação ao div.outer-circle*/
+    height: 320px;
+    width: 320px;
+    background-color: #151932;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/*tinha feito um div.circular-progress-bar e ia alterar os graus do conic-gradient, consoante a evolução do timer, mas para fazer tal e qual como está no design original, o correto é criar um <circle> e alterar as stroke-* properties, para obter aquele round cap final e alterar o início/fim do stroke, consoante a evolução do timer
+.circular-progress-bar{
+    position: absolute;
+    height: 300px;
+    width: 300px;
+    background: conic-gradient(#f87070 0deg, #f87070 270deg, transparent 270deg);
+    border-radius: 50%;
+}*/
+
+circle{
+    position: absolute;
+    top: 0;
+    fill: none;
+    stroke: var(--theme-color);
+    /*
+    stroke: #f87070; vou mudar, depois, em JavaScript, consoante a cor selecionada nos settings*/
+    stroke-width: 10px; /*the thickness of a line, text or outline*/
+    stroke-linecap: round; /*defines different types of endings to an open path*/
+    stroke-dasharray: 0 879; /*dash=0 gap=879px*/
+    stroke-dashoffset: 879; /*define em que ponto da SVG path começa o dash*/
+}
+
+/*o circle tem r=140px; o perímetro do círculo = 2*pi*r = 2*3.14*140 = 879px, aproximadamente. Portanto, o comprimento TOTAL do stroke, equivalente ao dash, *quando a progress-bar está completa*, é de 879px e o gap=0.
+
+O objetivo é atualizar a progress bar de minuto em minuto, ou seja, se o pomodoroNumber = 25, tenho de fazer 879px/25min ~= 35 --> número de pixeis que a progress bar vai andar em 1 minuto
+
+*/
+
+/*tornar os círculos concêntricos*/
+.outer-circle, .inner-circle, .circular-progress-bar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer{
+    position: absolute;
+    height: 270px;
+    width: 270px;
+    /*background-color: #151932;*/
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/*podia fazer só o .inner-circle até*/
+
+.time-left{
+    display: flex;
+    position: relative;
+    font-weight: 700;
+    font-size: 5rem;
+    font-family: 'Roboto', sans-serif; /*já tinha definido no body, porém, tenho de escrever aqui para consegui alterar em JavaScript*/
+}
+
+p.pause{
+    font-weight: 500;
+    font-size: .9rem;
+    letter-spacing: .8rem; /*o espaço é aplicado apenas do lado direito, ou seja, a primeira letra fica encostada ao limite do tag onde está inserida e fica um espaço extra no final. Isto cria uma quebra no layout, quando estou a tentar centrar. SOLUÇÃO: indentar o texto, na mesma medida do letter-spacement*/
+    text-indent: .8rem;
+}
+
+/*Até agora, alterava as cores das svg, aplicando um filter, que converte a cor original para a hex color desejada. No entanto, acho que isso é o mesmo que "cortar um cabelo com uma motosserra". Funciona, mas há formas mais eficientes.
+
+Em vez de adicionar a SVG, usando um img tag <img src="images/gear-solid.svg" class="settings-icon" alt="settings icon"> e escrever
+
+.settings-icon{
+    filter: invert(43%) sepia(8%) saturate(974%) hue-rotate(194deg) brightness(93%) contrast(95%);
+    *https://isotropic.co/tool/hex-color-to-css-filter/
+}
+
+seguir, antes, os seguintes passos:
+
+(1) Copy the SVG code <svg ... <path fill="..." d="..."/></svg>
+(2) Change the fill of every path to fill="currentColor"
+(3) Now, the SVG will take the color of my font color, and I can do something like:
+svg {
+    color : "red";
+}
+IMPORTANT: It does not work if the SVG is saved as a file and displayed with an <img> tag
+
+Alternativamente, posso editar diretamente o SVG code que incorporei no HTML OU ainda adicionar a SVG com um img tag e alterar o fill no código do *.svg file (fiz mais à frente isso, com os arrows). Há várias maneiras de resolver o mesmo problema, portanto*/
+
+.settings-icon{
+    color: #a9a9b2;
+    cursor: pointer;
+}
+
+/*SETTINGS*/
+.settings-container{
+    height: 100%;
+    width: 100%;
+    background-color: hsla(232, 41%, 14%, 0.5);
+    position: absolute;
+    /*display: flex;*/
+    display: none; /*vou escrever o código para mostrar/não mostrar, em JavaScript*/
+    align-items: center;
+    justify-content: center;
+}
+
+.settings{
+    background-color: white;
+    min-height: 60%; /*ajusta-se ao conteúdo*/
+    width: 35%;
+    border-radius: 25px;
+    color: black;
+    position: relative;
+}
+
+.settings-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem;
+    border-bottom: 1px solid #d5dcfa;
+}
+
+.close-icon{
+    height: 1.5rem;
+    cursor: pointer;
+}
+
+.settings-main{
+    padding: 0rem 2rem 1rem; /*padding: top right & left bottom; pu padding-top = 0 pq vou por no div.time*/
+    width: 100%; /*em relação ao div.settings*/
+}
+
+h4{
+    letter-spacing: .5rem;
+    font-size: .9rem;
+}
+
+.time{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    width: 100%; /*em relação ao div.settings-main*/
+}
+
+.time, .font{
+    border-bottom: 1px solid #d5d5d5;
+}
+
+.font, .color{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 0;
+}
+
+.time-options, .font-options, .color-options{
+    display: flex;
+    gap: 1rem;
+}
+
+.time-options p{
+    font-size: .8rem;
+    font-weight: 700;
+    color:#a9a9b2;
+    margin-bottom: .8rem;
+}
+
+.time-options{
+    width: 100%; /*em relação ao div.time*/
+}
+
+.pomodoro, .short-break, .long-break{
+    width: 33%; /*em relação ao div.time-options*/
+}
+
+.time-selection{
+    background-color: #eef1fa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .4rem .8rem;
+    width: 100%; /*em relação ao .pomodoro/.short-break/.long-break*/
+}
+
+/*NOTA: Relembra que height e width, em percentagem, são medidas relativas e, portanto, se definir uma width: 30%; num child element, tenho de, obrigatoriamente, definir a width de cada um dos parent elements, para poder computar 30% * parent element width*/
+
+.pomodoro-number, .short-break-number, .long-break-number{
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+.arrow-up, .arrow-down{
+    width: 1rem;
+    display: block; /*podia ter feito um display:flex; flex-direction:column; no div.arrows também*/
+    cursor: pointer;
+}
+
+.font-options div{
+    background-color: #eef1fa;
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #646881;
+    font-weight: 500;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Default - não preciso de escrever
+.roboto{
+    font-family: 'Roboto', sans-serif;
+} */
+
+.montserrat{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ibm-plex-sans{
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+
+.selected-font{
+    background-color: black !important;
+    color: #eef1fa !important;
+}
+
+.pink-circle, .cyan-circle, .violet-circle{
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pink-circle{
+    background-color: #f87070;
+}
+
+.cyan-circle{
+    background-color: #6ef3fc;
+}
+
+.violet-circle{
+    background-color: #da81f8;
+}
+
+.selected-color{
+    border: 2px solid black;
+}
+
+.apply{
+    background-color: var(--theme-color);
+    color: white;
+    width: 25%;
+    text-align: center;
+    font-size: .9rem;
+    font-weight: 700;
+    padding: .8rem 0;
+    border-radius: 30px;
+    position: absolute; /*em relação ao div.settings*/
+    bottom: -1.25rem; /*-8rem do padding, -.45rem de metade da font-size, para ficar centrado*/
+    left: 37.5%; /*50% - 12.5% (metade da largura do div.apply)*/
+    cursor: pointer;
+}
+
+/*Tablet View*/
+@media(max-width: 768px){
+
+    .settings{
+        width: 60%;
+    }
+
+}
+
+/*Mobile View*/
+@media(max-width: 425px){
+
+    .settings{
+        width: 90%;
+    }
+
+    .time-options{
+        flex-direction: column;
+    }
+
+    .pomodoro, .short-break, .long-break{
+        display: flex;
+        width: 100%; /*em relação a div.time-options*/
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .time-selection{
+        width: 50%;
+    }
+    
+    .font, .color{
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
