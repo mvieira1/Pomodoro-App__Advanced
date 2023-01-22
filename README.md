@@ -79,7 +79,7 @@ Users should be able to:
 - [viewBox](https://css-tricks.com/scale-svg/)
 
 ### Screenshots
-![](screenshots/PomodoroApp_timer.mp4)
+[Watch the time lapse!](screenshots/PomodoroApp_timer.mp4)
 
 ![](screenshots/screenshot-desktop-view.PNG)
 ![](screenshots/screenshot-desktop-view-settings.PNG)
