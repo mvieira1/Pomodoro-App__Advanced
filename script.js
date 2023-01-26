@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             };
             
-        }, 10); //de 1 em 1 segundo, executa a função myFunction e guarda o timer ID na variável timerID, o qual vou usar para parar a execução da função quando o relógio atingir os 0 minutos
+        }, 1000); //de 1 em 1 segundo, executa a função myFunction e guarda o timer ID na variável timerID, o qual vou usar para parar a execução da função quando o relógio atingir os 0 minutos
     };
 
     //ATENÇÃO: estou, constantemente, a escrever ***.innerText. Isto significa que a JS Engine está constantemente a executar essa instrução. É considerada best practice guardar isso numa variável e usá-la depois. Desta forma, o ***.innerText é executado apenas uma vez e o código é otimizado. Até agora, não me tinha preocupado com estas coisas, mas começa a fazer sentido para mim. Para já, vou manter assim pq me ajuda a entender melhor o meu raciocínio, mas, no próximo projeto vou procurar escrever código mais reutilizável e de rápida execução.
